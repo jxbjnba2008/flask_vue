@@ -4,10 +4,7 @@ import datetime
 import time
 from lxml import etree
 import records
-<<<<<<< HEAD
-=======
 import pymysql
->>>>>>> 修改1
 from tomorrow import threads
 from settings import *
 
@@ -17,16 +14,10 @@ headers = {
 
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 修改1
 db = records.Database('mysql+pymysql://{}:{}@{}:{}/{}'.format(MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB))
 
 start_url = 'https://www.qishubook.com'
 
-<<<<<<< HEAD
-=======
 client = pymysql.connect(host=MYSQL_HOST, port=MYSQL_PORT, user=MYSQL_USER, password=MYSQL_PASSWORD, database=MYSQL_DB)
 cursor = client.cursor()
 
@@ -74,7 +65,6 @@ def data_to_sql(client, cursor, data_dict, table_name):
         else:
             print("Caught PyMysqlError Exception. {}".format(e))
             raise e
->>>>>>> 修改1
 
 def getIp():
     # 代理服务器
@@ -139,19 +129,11 @@ def parse_fenlei(resp):
         # 作者
         author = book.xpath('./span[3]/text()')
         author = ''.join(author) if author else ''
-<<<<<<< HEAD
-        # print(book_title, book_url, book_id, new_chart, new_chart_url, new_chart_id, author)
-        item = {
-            'book_title': book_title,
-            'book_url': book_url,
-            'book_id': book_id,
-=======
         print(book_title, book_url, book_id, new_chart, new_chart_url, new_chart_id, author)
         item = {
             'book_title': book_title,
             'book_url': book_url,
             'book_id': int(book_id),
->>>>>>> 修改1
             'new_chart': new_chart,
             'new_chart_url': new_chart_url,
             'new_chart_id': int(new_chart_id),
@@ -173,30 +155,11 @@ def get_book_info(url):
     """
         获取小说章节标题及概要
     """
-<<<<<<< HEAD
-=======
     item = {}
->>>>>>> 修改1
     book_url = start_url + url
     resp = get_resp(book_url)
 
     xml = etree.HTML(resp)
-<<<<<<< HEAD
-    # 小说概要
-    abstract = xml.xpath('//*[@id="intro"]//text()')
-    abstract = ''.join(abstract).strip() if abstract else ''
-    # 小说章节
-    chart = xml.xpath('//li[@class="fenjuan"]')[1]
-    chart_list = chart.xpath('./following-sibling::li/a/@href')
-    # 章节id
-    chart_id_list = [li.replace('.html', '') for li in chart_list if li]
-    # 列表链接
-    chart_list = [url + li for li in chart_list if li]
-
-    print(abstract, chart_list, chart_id_list)
-    return abstract, chart_list
-
-=======
     # 作者
     # author = xml.xpath('//*[@id="info"]/p[1]/a/text()')
     # author = ''.join(author).strip() if author else ''
@@ -222,7 +185,6 @@ def get_book_info(url):
     return item
 
 # get_book_info('/book_112378/')
->>>>>>> 修改1
 
 def get_chart_content(url):
     """
@@ -238,65 +200,10 @@ def get_chart_content(url):
     return content
 
 
-<<<<<<< HEAD
-def insert_fenlei_table(item):
-    """
-        各分类下的小说表
-    """
-    insert_sql = 'INSERT INTO fenlei_table (book_title, book_url, book_id, new_chart, new_chart_url, new_chart_id, author, update_time, book_cate) ' \
-                 'values (:book_title, :book_url, :book_id, :new_chart, :new_chart_url, :new_chart_id, :author, :update_time, :book_cate)'
-    db.query(insert_sql, **item)
-
-@threads(2)
-def insert_fenlei(book_cate):
-    """
-        下载分类表
-    """
-    page = 1
-    update_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-    # update_time = datetime.datetime.strptime(time, '%Y-%m-%d %H:%M')
-    while True:
-        page_url = 'https://www.qishubook.com/fenlei/{}_{}/'.format(book_cate, page)
-        resp = get_resp(page_url)
-        if resp:
-            next_page = parse_next(resp)
-
-            for item in parse_fenlei(resp):
-                item.update({'update_time': update_time})
-                if book_cate == 1:
-                    item.update({'book_cate': 'xuanhuan'})
-                if book_cate == 3:
-                    item.update({'book_cate': 'xianxia'})
-                if book_cate == 4:
-                    item.update({'book_cate': 'dushi'})
-                if book_cate == 5:
-                    item.update({'book_cate': 'lishi'})
-                if book_cate == 6:
-                    item.update({'book_cate': 'wangyou'})
-                if book_cate == 8:
-                    item.update({'book_cate': 'kehuan'})
-                if book_cate == 2:
-                    item.update({'book_cate': 'yanqing'})
-                if book_cate == 7:
-                    item.update({'book_cate': 'jingji'})
-                print(item)
-                insert_fenlei_table(item)
-            if next_page == '>':
-                page = page + 1
-            else:
-                break
-        else:
-            page = page + 1
-
-def update_fenlei(book_cate_num):
-    """
-        更新分类表
-=======
 # @threads(2)
 def update_fenlei(book_cate_num):
     """
         更新分类表: fenlei_table
->>>>>>> 修改1
     """
     page = 1
     update_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -315,39 +222,12 @@ def update_fenlei(book_cate_num):
                     # 如果是新书就插入
                     if item['book_id'] not in book_id_list:
                         item.update({'book_cate': 'xuanhuan'})
-<<<<<<< HEAD
-=======
                         # 插入分类表
->>>>>>> 修改1
                         insert_fenlei_table(item)
                     # 更新小说章节
                     new_chart_id = query_chart_sql(item['book_id'], book_cate)
                     if item['new_chart_id'] not in new_chart_id:
                         update_book_sql(item, book_cate)
-<<<<<<< HEAD
-
-                if book_cate_num == 3:
-                    book_cate = 'xianxia'
-                    item.update({'book_cate': 'xianxia'})
-                if book_cate_num == 4:
-                    book_cate = 'dushi'
-                    item.update({'book_cate': 'dushi'})
-                if book_cate_num == 5:
-                    book_cate = 'lishi'
-                    item.update({'book_cate': 'lishi'})
-                if book_cate_num == 6:
-                    book_cate = 'wangyou'
-                    item.update({'book_cate': 'wangyou'})
-                if book_cate_num == 8:
-                    book_cate = 'kehuan'
-                    item.update({'book_cate': 'kehuan'})
-                if book_cate_num == 2:
-                    book_cate = 'yanqing'
-                    item.update({'book_cate': 'yanqing'})
-                if book_cate_num == 7:
-                    book_cate = 'jingji'
-                    item.update({'book_cate': 'jingji'})
-=======
                         print('已更新')
 
                 if book_cate_num == 3:
@@ -435,7 +315,6 @@ def update_fenlei(book_cate_num):
                     if item['new_chart_id'] not in new_chart_id:
                         update_book_sql(item, book_cate)
 
->>>>>>> 修改1
             if next_page == '>':
                 page = page + 1
             else:
@@ -443,9 +322,6 @@ def update_fenlei(book_cate_num):
         else:
             page = page + 1
 
-<<<<<<< HEAD
-def query_book_sql(book_cate):
-=======
 
 def update_info():
     """
@@ -544,20 +420,10 @@ def query_book_sql(book_cate):
     """
         查询分类表小说id
     """
->>>>>>> 修改1
     emp = {
         'book_cate': book_cate
     }
     book_id_list = []
-<<<<<<< HEAD
-    query_book_sql = 'select book_id from fenlei_table where book_cate=:book_cate'
-    rows = db.query(query_book_sql, **emp)
-    for row in rows:
-        book_id_list.append(row.book_id)
-    return book_id_list
-
-def query_chart_sql(book_id, book_cate):
-=======
     query_sql = 'select book_id from fenlei_table where book_cate=:book_cate'
     try:
         rows = db.query(query_sql, **emp)
@@ -573,48 +439,26 @@ def query_chart_sql(book_id, book_cate):
     """
         查询分类表小说章节id
     """
->>>>>>> 修改1
     emp = {
         'book_cate': book_cate,
         'book_id': book_id
     }
     chart_id_list = []
-<<<<<<< HEAD
-    query_book_sql = 'select new_chart_id from fenlei_table where book_id=:book_id and book_cate=:book_cate'
-    rows = db.query(query_book_sql, **emp)
-=======
     query_sql = 'select new_chart_id from fenlei_table where book_id=:book_id and book_cate=:book_cate'
     try:
         rows = db.query(query_sql, **emp)
     except:
         return query_chart_sql(book_id, book_cate)
->>>>>>> 修改1
     for row in rows:
         chart_id_list.append(row.new_chart_id)
     return chart_id_list
 
-<<<<<<< HEAD
-def update_book_sql(item, book_cate):
-    emp = {
-        'new_chart_url': item['new_chart_url'],
-        'new_chart_id': item['new_chart_id'],
-        'new_chart': item['new_chart'],
-        'update_time': item['update_time'],
-        'book_cate': book_cate,
-        'book_id': item['book_id']
-    }
-    update_book_sql = 'update fenlei_table set new_chart=:new_chart,new_chart_id=:new_chart_id,new_chart_url=:new_chart_url,update_time=:update_time where book_id=:book_id and book_cate=:book_cate'
-    db.query(update_book_sql, **emp)
-
-update_fenlei(1)
-=======
 
 
 while True:
     update_info()
 
 # update_fenlei(1)
->>>>>>> 修改1
 
 # item = {
 #     'new_chart_url': '/book_76312/51024418.html',
@@ -632,8 +476,4 @@ while True:
 
 # parse_fenlei(get_resp('https://www.qishubook.com/fenlei/1_1/'))
 # get_chart_content('/book_108237/50979292.html')
-<<<<<<< HEAD
 # get_book_info('/book_108237/')
-=======
-# get_book_info('/book_108237/')
->>>>>>> 修改1

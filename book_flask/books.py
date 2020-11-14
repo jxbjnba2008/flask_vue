@@ -57,36 +57,48 @@ class Books(object):
         return book_list
 
     def get_book_infos_by_book_id(self, book_id):
-<<<<<<< HEAD
-=======
         """
-            查询小说简介和章节列表
+            查询小说简介
         """
->>>>>>> 修改1
         data = []
         emp = {
             'book_id': book_id,
         }
-<<<<<<< HEAD
-        sql = "select * from fenlei_table where book_id=:book_id"
-=======
         sql = "select * from book_info where book_id=:book_id"
->>>>>>> 修改1
         rows = self.db.query(sql, **emp)
         for row in rows:
             data.append(row.as_dict())
         return data
 
     def get_book_all_caps_by_book_id(self,book_id):
-        sql = "select id,book_id,sort_id,detail_title from book_details where book_id='{}' order by sort_id".format(book_id)
-<<<<<<< HEAD
-        
-=======
+        """
+            查询小说所有章节列表
+        """
+        data = []
+        emp = {
+            'book_id': book_id,
+        }
+        sql = "select book_id,chart_id,chart_title from book_chart where book_id=:book_id order by chart_id"
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        return data
 
->>>>>>> 修改1
 
     def get_book_newest_20_caps_by_book_id(self,book_id):
-        sql = "select id,book_id,sort_id,detail_title from book_details where book_id='{}' order by sort_id desc limit 20".format(book_id)
+        """
+            查询小说最新的章节列表
+        """
+        data = []
+        emp = {
+            'book_id': book_id,
+        }        
+        sql = "select book_id,chart_id,chart_title from book_chart where book_id=:book_id order by chart_id desc limit 20"
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        return data
+
 
 
 if __name__ == '__main__':

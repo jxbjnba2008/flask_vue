@@ -4,44 +4,14 @@
             <b-container class="mt-4" v-if="items.indexItems.length == 1">
                 <b-row class="mb-3">
                     <b-col clos="12" md="4"> <!-- 放图片 -->
-<<<<<<< HEAD
-                        <b-img thumbnail fluid class="p-3" style="width:80%; margin-left:10%" :src="baseUrl+items.indexItems[0].image_paths" alt="Image 1"></b-img>
-=======
                         <b-img thumbnail fluid class="p-3" style="width:80%; margin-left:10%" :src="items.indexItems[0].img" alt="Image 1"></b-img>
->>>>>>> 修改1
                     
                     </b-col>
 
                     <b-col  clos="12" md="8"> <!-- 放图书信息 -->
                         
                             <b-jumbotron header-level="0" class="pt-3">
-<<<<<<< HEAD
-                                <template v-slot:header class="mt-1 mb-3">{{ items.indexItems[0].book_name }}</template>
-
-                                <div class="mb-3">作者：{{ items.indexItems[0].book_author }}</div>
-                                <div class="mb-3">最新章节：{{ items.indexItems[0].book_newest_name }}</div>
-                                <div class="mb-3">最新更新时间：{{ dateFormat(items.indexItems[0].book_last_update_time) }}</div>
-                                <div class="mb-3">本书状态：{{ items.indexItems[0].book_status }}</div>
-
-                                
-
-                                <hr class="my-4">
-
-                                <p v-text="items.indexItems[0].book_desc">
-                                </p>
-
-
-                                <b-button pill variant="primary" class="left"  style="float:left; margin-left:5px" :href="'/book/'+items.indexItems[0].book_id+'/'+ items.allCapItems[0].sort_id">开始阅读</b-button>
-                                <b-button pill variant="success" class="right" style="float:right; margin-right:5px"  href="#">加入收藏夹</b-button>
-                            </b-jumbotron>
-                            
-                        
-                    </b-col>
-                </b-row>
-
-                <b-row class="mb-2">
-=======
-                                <template v-slot:header class="mt-1 mb-3">{{ items.indexItems[0].book_title }}</template>
+                                <template v-slot:header class="mt-1 mb-3" style="font-size:12px; color:#F08080">{{ items.indexItems[0].book_title }}</template>
 
                                 <div class="mb-3">作者：{{ items.indexItems[0].author }}</div>
                                 <div class="mb-3">最新章节：{{ items.indexItems[0].new_chart }}</div>
@@ -61,40 +31,21 @@
                     </b-col>
                 </b-row>
 
-                <!-- <b-row class="mb-2">
->>>>>>> 修改1
+                <b-row class="mb-2">
                     <b-col class="normal-center"><h4>最近更新的20章图书</h4></b-col> 
                 </b-row>
                 <b-row class="mb-4">
-                    <b-col clos="12" md="4" v-for="item in items.newest20CapItems" :key="item.id"><a :href="'/book/'+item.book_id+'/'+item.sort_id ">{{ item.detail_title }}</a></b-col>
-<<<<<<< HEAD
+                    <b-col clos="12" md="4" v-for="item in items.newest20CapItems" :key="item.chart_id"><a :href="'/book/'+item.book_id+'/'+item.chart_id " style="font-size:12px; color:#F08080">{{ item.chart_title }}</a></b-col>
                 </b-row>
 
 
                 <b-row class="mb-2 ">
-=======
-                </b-row> -->
-
-
-                <!-- <b-row class="mb-2 ">
->>>>>>> 修改1
                     <b-col class="normal-center"><h4>所有章节的内容</h4></b-col>
                 </b-row>
                 <b-row class="mb-2">
-                    <b-col clos="12" md="4" v-for="item in items.allCapItems" :key="item.id"><a :href="'/book/'+item.book_id+'/'+item.sort_id ">{{ item.detail_title }}</a></b-col>
+                    <b-col clos="12" md="4" v-for="item in items.allCapItems" :key="item.chart_id"><a :href="'/book/'+item.book_id+'/'+item.chart_id " style="font-size:12px; color:#F08080">{{ item.chart_title }}</a></b-col>
                     
-<<<<<<< HEAD
                 </b-row>
-
-               
-            </b-container>
-            <b-container class="mt-4" v-else>
-                        哦哦，您要查看的图书不存在
-            </b-container>
-
-            
-=======
-                </b-row> -->
 
                
             </b-container>
@@ -102,7 +53,6 @@
                         哦哦，您要查看的图书不存在
             </b-container> -->
 
->>>>>>> 修改1
        <Footer />
     </div>
 </template>
