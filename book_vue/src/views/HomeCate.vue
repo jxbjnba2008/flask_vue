@@ -13,10 +13,10 @@
                     <table role="table" aria-busy="false" aria-colcount="3" class="table b-table" style="table-layout:fixed;"><!----><!---->
                         <thead role="rowgroup" class=""><!---->
                         <tr role="row" class="">
-                            <th role="columnheader" scope="col" aria-colindex="1" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>小说</div></th>
-                            <th role="columnheader" scope="col" aria-colindex="2" class="" style="width:250px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>最新章节</div></th>
-                            <th role="columnheader" scope="col" aria-colindex="3" class="" style="width:110px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>作者</div></th>
-                            <th role="columnheader" scope="col" aria-colindex="4" class="" style="width:140px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>更新时间</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="1" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>小说</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="2" class="" style="width:250px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>最新章节</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="3" class="" style="width:110px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>作者</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="4" class="" style="width:140px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>更新时间</div></th>
                         </tr>
                         </thead>
                         <tbody role="rowgroup"><!---->
@@ -38,8 +38,8 @@
                     <table role="table" aria-busy="false" aria-colcount="3" class="table b-table" style="table-layout:fixed; margin-left:50px"><!----><!---->
                         <thead role="rowgroup" class=""><!---->
                         <tr role="row" class="">
-                            <th role="columnheader" scope="col" aria-colindex="1" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>小说</div></th>
-                            <th role="columnheader" scope="col" aria-colindex="2" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;background-color: ;border-style: none none solid none;"><div>作者</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="1" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>小说</div></th>
+                            <th role="columnheader" scope="col" aria-colindex="2" class="" style="width:160px;font-family: verdana,arial,sans-serif; font-size:13px; color:	#686868; border-width: 2px; border-color: #dedede;border-style: none none solid none;"><div>作者</div></th>
                             </tr>
                         </thead>
                         <tbody role="rowgroup"><!---->

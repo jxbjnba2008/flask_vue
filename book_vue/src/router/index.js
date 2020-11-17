@@ -4,6 +4,8 @@ import Home from '../views/Home.vue'
 import BookSearch from "../views/BookSearch.vue"
 import HomeCate from "../views/HomeCate.vue"
 import BookIndex from "../views/BookIndex.vue";
+import BookDetail from "../views/BookDetail.vue";
+// import Bookrack from "../views/Bookrack.vue";
 
 Vue.use(VueRouter)
 
@@ -33,6 +35,18 @@ const routes = [
     name: "BookIndex",
     component: BookIndex,
   },
+    // 图书详情页
+  {
+    path: "/book/:book_id/:sort_id",
+    name: "BookDetail",
+    component: BookDetail
+  },
+    // 书架
+  // {
+  //   path: '/bookrack',
+  //   name: 'Bookrack',
+  //   component: Bookrack
+  // },
 
 ]
 

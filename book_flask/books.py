@@ -99,8 +99,51 @@ class Books(object):
             data.append(row.as_dict())
         return data
 
+    def get_book_detail_by_book_id_sort_id(self, book_id, chart_id):
+        data = []
+        emp = {
+            'book_id': book_id,
+            'chart_id': chart_id,
+        }
+        sql = "select * from book_chart_content where book_id=:book_id and chart_id=:chart_id;"
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        return data
 
+    # 查询下一章的sql： select * from book_details where book_id=45563 and sort_id>328922 order by sort_id  limit 1
+    def get_next_cap_id(self, book_id, chart_id):
+        data = []
+        emp = {
+            'book_id': book_id,
+            'chart_id': chart_id,
+        }
+        sql = "select chart_id from book_chart_content where book_id=:book_id and chart_id>:chart_id order by chart_id  limit 1"
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        if data:
+            return data[0]
+        else:
+            return None
+
+    # 查询上一章的sql： select * from book_details where book_id=45563 and sort_id<328922 order by sort_id desc limit 1
+    def get_before_cap_id(self, book_id, chart_id):
+        data = []
+        emp = {
+            'book_id': book_id,
+            'chart_id': chart_id,
+        }
+        sql = "select chart_id from book_chart_content where book_id=:book_id and chart_id<:chart_id order by chart_id desc limit 1"
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        # print(data[0])
+        if data:
+            return data[0]
+        else:
+            return None
 
 if __name__ == '__main__':
     books = Books()
-    books.get_book_infos_by_book_id(30571)
+    books.get_before_cap_id(76312, 22145521)

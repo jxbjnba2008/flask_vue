@@ -14,6 +14,7 @@ headers = {
 
 }
 
+
 db = records.Database('mysql+pymysql://{}:{}@{}:{}/{}'.format(MYSQL_USER, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT, MYSQL_DB))
 
 start_url = 'https://www.qishubook.com'
@@ -89,16 +90,19 @@ def getIp():
 
 def get_resp(url):
     count = 0
-    while count < 5:
+    while count < 10:
         count = count + 1
         try:
             resp = requests.get(url, headers=headers, proxies=getIp())
             if resp.status_code == 200:
-                resp.encoding = 'gbk'
+                # resp.encoding = 'utf-8'
                 return resp.text
+            else:
+                continue
         except:
-            continue
+            print('-----{}---requests error--------'.format(url))
         time.sleep(1)
+        continue
     return ''
 
 
@@ -195,9 +199,26 @@ def get_chart_content(url):
 
     xml = etree.HTML(resp)
     content = xml.xpath('//*[@id="htmlContent"]//text()')
-    content = ''.join(content).replace(' 一秒记住【奇书网 www.qishubook.com】，精彩小说无弹窗免费阅读！', '') if content else ''
+    content = ''.join(content).replace('一秒记住【奇书网 www.qishubook.com】，精彩小说无弹窗免费阅读！', '') if content else ''
     print(content)
     return content
+get_chart_content('/book_30871/12044679.html')
+
+def load_chart_content(start_id):
+    """
+        下载小说章节
+    """
+    query_sql = 'select * from book_chart_copy2'
+    try:
+        rows = db.query(query_sql)
+    except:
+        return load_chart_content(start_id)
+    for row in rows:
+        try:
+            insert_chart_content_table(row)
+        except Exception as e:
+            print('-----------sql error !----{}------'.format(e))
+            continue
 
 
 # @threads(2)
@@ -378,6 +399,30 @@ def insert_book_info_table(item):
                  'values (:book_title, :book_url, :book_id, :new_chart, :new_chart_url, :new_chart_id, :author, :update_time, :book_cate, :abstract, :img)'
     db.query(insert_sql, **item)
 
+
+# @threads(50)
+def insert_chart_content_table(row):
+    """
+        插入章节表
+    """
+    chart_url = row.chart_url
+    chart_content = get_chart_content(chart_url)
+
+    # 小说章节表
+    chart_base = {
+        'book_id': row.book_id,
+        'book_title': row.book_title,
+        'chart_title': row.chart_title,
+        'chart_id': row.chart_id,
+        'chart_content': chart_content,
+    }
+    print(row.book_title)
+    insert_sql = 'INSERT INTO book_chart_content (book_title, book_id, chart_title, chart_id, chart_content) ' \
+                 'values (:book_title, :book_id, :chart_title, :chart_id, :chart_content)'
+    db.query(insert_sql, **chart_base)
+
+# load_chart_content()
+
 @threads(50)
 def insert_chart_table(item):
     """
@@ -387,8 +432,6 @@ def insert_chart_table(item):
     insert_sql = 'INSERT INTO book_chart (book_title, book_id, chart_title, chart_id, chart_url) ' \
                  'values (:book_title, :book_id, :chart_title, :chart_id, :chart_url)'
     db.query(insert_sql, **item)
-
-
 
 
 def insert_fenlei_table(item):
@@ -454,9 +497,11 @@ def query_chart_sql(book_id, book_cate):
     return chart_id_list
 
 
-
-while True:
-    update_info()
+# load_chart_content(0)
+# start_id = 0
+# while start_id < 1000000:
+#     load_chart_content(start_id)
+#     start_id = start_id + 1000
 
 # update_fenlei(1)
 
