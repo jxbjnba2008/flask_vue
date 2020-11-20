@@ -13,12 +13,16 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def hello_world():
     books = Books()
-    book_list = books.get_book_info_limit()
-
-    return jsonify(book_list)
+    sql_data = books.get_book_info_limit()
+    resData = {
+        "resCode": 0,  # 非0即错误 1
+        "data": sql_data,  # 数据位置，一般为数组
+        "message": '图书的信息'
+    }
+    return jsonify(resData)
 
 
 @app.route('/books_cates', methods=['GET'])

@@ -11,7 +11,7 @@ class Books(object):
             'book_title': key,
             'author': key
         }
-        sql = "select * from fenlei_table where book_title=:book_title or author=:author"
+        sql = "select * from book_info where book_title=:book_title or author=:author"
         rows = self.db.query(sql, **emp)
         data = []
         for row in rows:
@@ -21,36 +21,39 @@ class Books(object):
 
     def get_book_info_limit(self):
         """
-
-        :return:
+            首页热门推荐
         """
         book_list = []
-        sql = 'select * from fenlei_table limit 5'
+        sql = 'select * from book_info limit 6'
         rows = self.db.query(sql)
         for row in rows:
             book_list.append(row.as_dict())
+        # print(book_list)
         return book_list
 
     def get_cates_newst_books_30(self, book_cate):
-        # sql = "select id, book_name,book_id,book_last_update_time, \
-        # book_newest_name,book_newest_url from book_infos \
-        # where book_cate='{}' order by book_last_update_time desc limit 30;".format(book_cate)
+        """
+            查询各分类的最新更新的小说
+        """
         book_list = []
         emp = {
             'book_cate': book_cate,
         }
-        sql = 'select * from fenlei_table where book_cate=:book_cate limit 20'
+        sql = 'select * from book_info where book_cate=:book_cate limit 20'
         rows = self.db.query(sql, **emp)
         for row in rows:
             book_list.append(row.as_dict())
         return book_list
 
     def get_cates_most_books_30(self, book_cate):
+        """
+            查询各分类的最多的小说
+        """
         book_list = []
         emp = {
             'book_cate': book_cate,
         }
-        sql = 'select * from fenlei_table where book_cate=:book_cate limit 20'
+        sql = 'select * from book_info where book_cate=:book_cate limit 20'
         rows = self.db.query(sql, **emp)
         for row in rows:
             book_list.append(row.as_dict())
@@ -146,4 +149,4 @@ class Books(object):
 
 if __name__ == '__main__':
     books = Books()
-    books.get_before_cap_id(76312, 22145521)
+    books.get_book_info_limit()

@@ -1,6 +1,12 @@
 import service from "../utils/request.js";
 //import { rsaEncrypt } from "../utils/rsa.js";
 
+export function GetBooks(){
+    return service.request({
+        method: "get",
+        url: "/"
+    });
+};
 
 export function GetCates(){
     return service.request({

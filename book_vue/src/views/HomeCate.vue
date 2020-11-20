@@ -44,7 +44,7 @@
                         </thead>
                         <tbody role="rowgroup"><!---->
                             <tr role="row" v-for="item in items.mostItems" :key="item.book_id">
-                            <td aria-colindex="1" role="cell" class="" style="white-space:nowrap;overflow:hidden;text-overflow: ellipsis;font-family: verdana,arial,sans-serif; font-size:10px; border-width: 1.5px;background-color: #ffffff;"><a :href="'/book_'+ item.book_id" style="font-size: 12px;color:#F08080">{{ item.book_title }}</a></td>
+                            <td aria-colindex="1" role="cell" class="" style="white-space:nowrap;overflow:hidden;text-overflow: ellipsis;font-family: verdana,arial,sans-serif; font-size:10px; border-width: 1.5px;background-color: #ffffff;"><a :href="'/book/'+ item.book_id" style="font-size: 12px;color:#F08080">{{ item.book_title }}</a></td>
                             <td aria-colindex="2" role="cell" class="" style="white-space:nowrap;overflow:hidden;text-overflow: ellipsis;font-family: verdana,arial,sans-serif; font-size:10px; border-width: 1.5px;background-color: #ffffff;"><a style="font-size: 12px;color:#888888">{{ item.author }}</a></td>
                             
                             </tr>

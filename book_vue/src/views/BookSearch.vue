@@ -16,9 +16,9 @@
                     </thead>
                     <tbody role="rowgroup"><!---->
                         <tr role="row" v-for="item in searhResult.items" :key="item.id">
-                            <td aria-colindex="1" role="cell" class=""><a :href="'/book/'+item.book_url">{{ item.book_title }}</a></td>
-                            <td aria-colindex="2" role="cell" class=""><a :href="'/book/'+item.book_url">{{ item.author }}</a></td>
-                            <td aria-colindex="3" role="cell" class=""><a :href="'/book/'+item.book_url+'/'">{{ item.new_chart }}</a></td>
+                            <td aria-colindex="1" role="cell" class=""><a :href="'/book/'+item.book_id"  style="font-size: 12px;color:#F08080">{{ item.book_title }}</a></td>
+                            <td aria-colindex="2" role="cell" class=""><a style="font-size: 12px; color:#888888">{{ item.author }}</a></td>
+                            <td aria-colindex="3" role="cell" class=""><a style="font-size: 12px; color:#686868">{{ item.new_chart }}</a></td>
                         </tr>
 
                     </tbody><!---->

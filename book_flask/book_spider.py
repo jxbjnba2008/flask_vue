@@ -102,7 +102,6 @@ def get_resp(url):
         except:
             print('-----{}---requests error--------'.format(url))
         time.sleep(1)
-        continue
     return ''
 
 
@@ -202,7 +201,7 @@ def get_chart_content(url):
     content = ''.join(content).replace('一秒记住【奇书网 www.qishubook.com】，精彩小说无弹窗免费阅读！', '') if content else ''
     print(content)
     return content
-get_chart_content('/book_30871/12044679.html')
+# get_chart_content('/book_30871/12044679.html')
 
 def load_chart_content(start_id):
     """
@@ -241,15 +240,58 @@ def update_fenlei(book_cate_num):
                     book_cate = 'xuanhuan'
                     book_id_list = query_book_sql(book_cate)
                     # 如果是新书就插入
-                    if item['book_id'] not in book_id_list:
-                        item.update({'book_cate': 'xuanhuan'})
-                        # 插入分类表
+                    if int(item['book_id']) not in book_id_list:
+                        # 获取小说简介和章节列表
+                        book_url = item['book_url']
+                        book_info_item = get_book_info(book_url)
+                        img = book_info_item['img']
+                        abstract = book_info_item['abstract']
+                        chart_title_list = book_info_item['chart_title_list']
+                        chart_id_list = book_info_item['chart_id_list']
+                        chart_url_list = book_info_item['chart_url_list']
+
+                        # 插入分类表: book_info
+                        item.update({'img': img, 'abstract': abstract, 'book_cate': 'xuanhuan'})
                         insert_fenlei_table(item)
-                    # 更新小说章节
-                    new_chart_id = query_chart_sql(item['book_id'], book_cate)
-                    if item['new_chart_id'] not in new_chart_id:
-                        update_book_sql(item, book_cate)
-                        print('已更新')
+                        # 插入章节表: book_chart
+                        for chart_id, chart_url, chart_title in zip(chart_id_list, chart_url_list, chart_title_list):
+                            chart_item = {
+                                'book_id': item['book_id'],
+                                'book_title': item['book_title'],
+                                'chart_title': chart_title,
+                                'chart_id': chart_id,
+                                'chart_url': chart_url,
+                            }
+                            insert_chart_table(chart_item)
+
+                    # 如果已经有该小说，则更新小说章节
+                    else:
+                        new_chart_id = query_new_chart_sql(item['book_id'], book_cate)
+                        if int(item['new_chart_id']) not in new_chart_id:
+                            # 更新小说分类表：book_info
+                            update_book_sql(item, book_cate)
+                            # 更新小说章节列表
+                            # 获取小说简介和章节列表
+                            book_url = item['book_url']
+                            book_info_item = get_book_info(book_url)
+                            chart_title_list = book_info_item['chart_title_list']
+                            chart_id_list = book_info_item['chart_id_list']
+                            chart_url_list = book_info_item['chart_url_list']
+
+                            query_id_list = query_chart_sql(item['book_id'])
+                            # 插入章节表: book_chart
+                            for chart_id, chart_url, chart_title in zip(chart_id_list, chart_url_list, chart_title_list):
+                                if int(chart_id) not in query_id_list:
+                                    chart_item = {
+                                        'book_id': item['book_id'],
+                                        'book_title': item['book_title'],
+                                        'chart_title': chart_title,
+                                        'chart_id': chart_id,
+                                        'chart_url': chart_url,
+                                    }
+                                    insert_chart_table(chart_item)
+
+                            print('已更新')
 
                 if book_cate_num == 3:
                     book_cate = 'xianxia'
@@ -436,10 +478,10 @@ def insert_chart_table(item):
 
 def insert_fenlei_table(item):
     """
-        插入分类表新的小说
+        插入分类表新的小说:book_info表
     """
-    insert_sql = 'INSERT INTO fenlei_table (book_title, book_url, book_id, new_chart, new_chart_url, new_chart_id, author, update_time, book_cate) ' \
-                 'values (:book_title, :book_url, :book_id, :new_chart, :new_chart_url, :new_chart_id, :author, :update_time, :book_cate)'
+    insert_sql = 'INSERT INTO book_info (book_title, book_url, book_id, new_chart, new_chart_url, new_chart_id, author, update_time, book_cate, img, abstract) ' \
+                 'values (:book_title, :book_url, :book_id, :new_chart, :new_chart_url, :new_chart_id, :author, :update_time, :book_cate, :img, :abstract)'
     db.query(insert_sql, **item)
 
 
@@ -455,7 +497,7 @@ def update_book_sql(item, book_cate):
         'book_cate': book_cate,
         'book_id': item['book_id']
     }
-    update_book_sql = 'update fenlei_table set new_chart=:new_chart,new_chart_id=:new_chart_id,new_chart_url=:new_chart_url,update_time=:update_time where book_id=:book_id and book_cate=:book_cate'
+    update_book_sql = 'update book_info set new_chart=:new_chart,new_chart_id=:new_chart_id,new_chart_url=:new_chart_url,update_time=:update_time where book_id=:book_id and book_cate=:book_cate'
     db.query(update_book_sql, **emp)
 
 
@@ -467,7 +509,7 @@ def query_book_sql(book_cate):
         'book_cate': book_cate
     }
     book_id_list = []
-    query_sql = 'select book_id from fenlei_table where book_cate=:book_cate'
+    query_sql = 'select book_id from book_info where book_cate=:book_cate'
     try:
         rows = db.query(query_sql, **emp)
     except:
@@ -478,24 +520,43 @@ def query_book_sql(book_cate):
     return book_id_list
 # query_book_sql('kehuan')
 
-def query_chart_sql(book_id, book_cate):
+def query_new_chart_sql(book_id, book_cate):
     """
-        查询分类表小说章节id
+        查询分类表小说最新章节id
     """
     emp = {
         'book_cate': book_cate,
         'book_id': book_id
     }
     chart_id_list = []
-    query_sql = 'select new_chart_id from fenlei_table where book_id=:book_id and book_cate=:book_cate'
+    query_sql = 'select new_chart_id from book_info where book_id=:book_id and book_cate=:book_cate'
     try:
         rows = db.query(query_sql, **emp)
     except:
-        return query_chart_sql(book_id, book_cate)
+        return query_new_chart_sql(book_id, book_cate)
     for row in rows:
         chart_id_list.append(row.new_chart_id)
     return chart_id_list
 
+
+def query_chart_sql(book_id):
+    """
+        查询分类表小说所有章节id
+    """
+    emp = {
+        'book_id': book_id
+    }
+    chart_id_list = []
+    query_sql = 'select chart_id from book_chart where book_id=:book_id'
+    try:
+        rows = db.query(query_sql, **emp)
+    except:
+        return query_chart_sql(book_id)
+    for row in rows:
+        chart_id_list.append(row.chart_id)
+    print(chart_id_list)
+    return chart_id_list
+# query_chart_sql('1318')
 
 # load_chart_content(0)
 # start_id = 0
@@ -503,7 +564,7 @@ def query_chart_sql(book_id, book_cate):
 #     load_chart_content(start_id)
 #     start_id = start_id + 1000
 
-# update_fenlei(1)
+update_fenlei(1)
 
 # item = {
 #     'new_chart_url': '/book_76312/51024418.html',
