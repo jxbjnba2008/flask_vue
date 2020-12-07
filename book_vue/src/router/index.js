@@ -23,12 +23,13 @@ const routes = [
     component: BookSearch
   },
 
-    // 网站分类页面
+    // 图书分类页面
   {
     path: "/:book_cate",
     name: "HomeCate",
     component: HomeCate
   },
+
     // 图书首页
   {
     path: "/book/:book_id",

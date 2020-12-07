@@ -25,3 +25,19 @@ export function GetInfoPost(postParams){
         }
     });
 };
+
+export function GetPagePost(url, pageNo, pageSize){
+    return service.request({
+        method: "post",
+        url: url + '/page',
+        data:{
+            pageNo: pageNo,
+            pageSize: pageSize,
+        }
+
+//         data:{
+//             key: postParams.key, // newest
+// //             secretKey: rsaEncrypt(new Date().getTime()+':'+'www.baidu.com'+':'+'otherinfos') // 预留字段给加密用
+//         }
+    });
+};

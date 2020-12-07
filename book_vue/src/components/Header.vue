@@ -14,7 +14,9 @@
           <ul  class="navbar-nav ml-auto">
             <li  class="form-inline">
               <div  class="form-inline">
-                <input v-model="search.key" type="text" placeholder="输入图书名字或者作者名字" class="mr-sm-2 form-control form-control-sm" >
+                <label>
+                  <input v-model="search.key" type="text" placeholder="输入图书名字或者作者名字" class="mr-sm-2 form-control form-control-sm" >
+                </label>
                 <button @click="onSearch" type="submit" class="btn my-2 my-sm-0 btn-secondary btn-sm">开始查询</button>
               </div>
             </li>
@@ -47,7 +49,7 @@ export default {
     created () { // setup相当与beforecreate、created; props：来自爸爸的爱（父组件传入的内容）;context：当前组件拥有的内容
 
         //this.now_url = this.$router.path;
-        console.log("now_url = ", this.now_url);
+        console.log("now_url1 = ", this.now_url);
 
         GetCates().then(response => {
             this.headerData = response.data;

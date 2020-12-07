@@ -24,6 +24,63 @@ def hello_world():
     }
     return jsonify(resData)
 
+@app.route('/<string:book_cate>/page', methods=['POST'])
+def page_info(book_cate):
+    if request.method == 'POST':
+        get_data = json.loads(request.get_data(as_text=True))
+        pageNo = get_data['pageNo']
+        pageSize = get_data['pageSize']
+        # key = request.form.get('key')
+        print('-----pageNo-----{}'.format(pageNo))
+        # secretKey = get_data['secretKey']
+        # secret_result = get_secret_key(secretKey)
+        # if secret_result['request_time'] == '':
+        #     # 如果这边返回的是空的，说明请求的数据已经被破坏了
+        #     resData = {
+        #         "resCode": 1, # 非0即错误 1
+        #         "data": [],# 数据位置，一般为数组
+        #         "message": '你猜，你使劲猜'
+        #     }
+        #     return jsonify(resData)
+        # if is_allow_domain_time(secret_result['request_time'], secret_result['request_url']):
+        #     resData = {
+        #         "resCode": 1, # 非0即错误 1
+        #         "data": [],# 数据位置，一般为数组
+        #         "message": '你猜，你使劲猜'
+        #     }
+        #     return jsonify(resData)
+        # if is_string_validate(key):
+        #     resData = {
+        #         "resCode": 1, # 非0即错误 1
+        #         "data": [],# 数据位置，一般为数组
+        #         "message": '参数错误'
+        #     }
+        #     return jsonify(resData)
+        books = Books()
+        search_data = books.get_books_page(book_cate, pageNo, pageSize)
+        print(search_data)
+        if len(search_data) == 0:
+            resData = {
+                "resCode": 0, # 非0即错误 1
+                "data": [],# 数据位置，一般为数组
+                "message": '数据为空'
+            }
+            return jsonify(resData)
+
+        resData = {
+            "resCode": 0, # 非0即错误 1
+            "data": search_data,# 数据位置，一般为数组
+            "message": '搜索结果'
+        }
+        return jsonify(resData)
+    else:
+        resData = {
+            "resCode": 1, # 非0即错误 1
+            "data": [],# 数据位置，一般为数组
+            "message": '请求方法错误'
+        }
+        return jsonify(resData)
+
 
 @app.route('/books_cates', methods=['GET'])
 def get_books_cates():

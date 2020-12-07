@@ -147,6 +147,21 @@ class Books(object):
         else:
             return None
 
+    def get_books_page(self, book_cate, pageNo, pageSize):
+        data = []
+        emp = {
+            'book_cate': book_cate,
+        }
+        sql = "SELECT * from book_info where book_cate=:book_cate limit {},{} ".format((pageNo-1)*pageSize, pageSize)
+        rows = self.db.query(sql, **emp)
+        for row in rows:
+            data.append(row.as_dict())
+        # print(data)
+        if data:
+            return data
+        else:
+            return None
+
 if __name__ == '__main__':
     books = Books()
-    books.get_book_info_limit()
+    books.get_books_page('xuanhuan', 0, 10)
