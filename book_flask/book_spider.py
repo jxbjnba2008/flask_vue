@@ -171,10 +171,11 @@ def get_book_info(url):
     abstract = xml.xpath('//*[@id="intro"]//text()')
     item['abstract'] = ''.join(abstract).strip() if abstract else ''
     # 小说章节
-    try:
-        chart = xml.xpath('//li[@class="fenjuan"]')[1]
-    except:
-        chart = xml.xpath('//ul[@class="mulu_list"]/div[@class="clear"]')[0]
+    # try:
+    # chart = xml.xpath('//li[@class="fenjuan"]')[1]
+    chart = xml.xpath('//ul[@class="mulu_list"]/div[@class="clear"]')[0]
+    # except:
+        # chart = xml.xpath('//ul[@class="mulu_list"]/div[@class="clear"]')[0]
     chart_url_list = chart.xpath('./following-sibling::li/a/@href')
     # 章节标题
     item['chart_title_list'] = chart.xpath('./following-sibling::li/a/text()')
@@ -182,10 +183,10 @@ def get_book_info(url):
     item['chart_id_list'] = [li.replace('.html', '') for li in chart_url_list if li]
     # 链接列表
     item['chart_url_list'] = [url + li for li in chart_url_list if li]
-    # print(item)
+    # print(item['chart_title_list'])
     return item
 
-# get_book_info('/book_30871/')
+# get_book_info('/book_126710/')
 
 def get_chart_content(url):
     """
@@ -400,7 +401,7 @@ def insert_chart_content_table(row):
 
 # load_chart_content()
 
-@threads(50)
+# @threads(50)
 def insert_chart_table(item):
     """
         插入新的小说: book_chart表
@@ -500,22 +501,68 @@ def query_chart_sql(book_id):
 #     load_chart_content(start_id)
 #     start_id = start_id + 1000
 
-update_fenlei(6)
+# update_fenlei(6)
 
-# item = {
-#     'new_chart_url': '/book_76312/51024418.html',
-#     'new_chart_id': 51024418,
-#     'new_chart': '第5203章 全年碾压，暴揍姬赢！',
-#     'update_time': '2020-10-27 19:31:00',
-#     'book_id': '76312',
-# }
-# update_book_sql(item, 'xuanhuan')
-# query_chart_sql('89915', 'xuanhuan')
+def addition_book_chart(book_id):
+    """
+        补充缺失章节的小说
+    """
+    url = '/book_{}/'.format(book_id)
+    book_url = start_url + url
+    resp = get_resp(book_url)
 
-# for i in [2, 3, 4, 5, 6, 7, 8]:
-# insert_fenlei(6)
+    xml = etree.HTML(resp)
+    # 小说标题
+    book_title = xml.xpath('//div[@id="info"]/h1/text()')
+    book_title = ''.join(book_title)
+    # 小说章节
+    chart = xml.xpath('//ul[@class="mulu_list"]/div[@class="clear"]')[0]
+    # chart = xml.xpath('//ul[@class="mulu_list"]/div[@class="clear"]')[0]
+    chart_url_list = chart.xpath('./following-sibling::li/a/@href')
+    # 章节标题
+    chart_title_list = chart.xpath('./following-sibling::li/a/text()')
+    # 章节id
+    chart_id_list = [li.replace('.html', '') for li in chart_url_list if li]
+    # 链接列表
+    chart_url_list = [url + li for li in chart_url_list if li]
+    # print(item['chart_title_list'])
 
+    query_id_list = query_chart_sql(book_id)
 
-# parse_fenlei(get_resp('https://www.qishubook.com/fenlei/1_1/'))
-# get_chart_content('/book_108237/50979292.html')
-# get_book_info('/book_108237/')
+    emp = {
+        'book_id': book_id
+    }
+    query_sql = 'select chart_id from book_chart_content where book_id=:book_id'
+    rows = db.query(query_sql, **emp)
+    chart_content_list = []
+    for row in rows:
+        chart_content_list.append(row.chart_id)
+    print(chart_content_list)
+    for chart_title, chart_id, chart_url in zip(chart_title_list, chart_id_list, chart_url_list):
+        if int(chart_id) not in query_id_list:
+            chart_item = {
+                'book_id': book_id,
+                'book_title': book_title,
+                'chart_title': chart_title,
+                'chart_id': chart_id,
+                'chart_url': chart_url,
+            }
+            insert_chart_table(chart_item)
+
+        if int(chart_id) not in chart_content_list:
+            chart_content = get_chart_content(chart_url)
+
+            # 小说章节表
+            chart_base = {
+                'book_id': book_id,
+                'book_title': book_title,
+                'chart_title': chart_title,
+                'chart_id': chart_id,
+                'chart_content': chart_content,
+            }
+            print(chart_title)
+            insert_sql = 'INSERT INTO book_chart_content (book_title, book_id, chart_title, chart_id, chart_content) ' \
+                         'values (:book_title, :book_id, :chart_title, :chart_id, :chart_content)'
+            db.query(insert_sql, **chart_base)
+
+addition_book_chart(27835)

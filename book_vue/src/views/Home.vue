@@ -14,10 +14,10 @@
                 <div class="">
 <!--                  <ul>-->
                     <div v-for="item in bookItems" style="width:178px;float:left">
-                      <b-img thumbnail fluid class="img-rounded" style="width:90%; height:14vw;border-style: groove;" :src="item.img" alt="Image 1"></b-img>
+                      <b-img thumbnail fluid class="img-rounded" style="'width':+screenWidth; height:14vw;border-style: groove;" :src="item.img" alt="Image 1"></b-img>
                        <td style="width:100%;height:11px;font-size:14px;border:0">
                        </td>
-                      <h4 style="font-size: 12px; color:#FF6666; text-align:left">{{item.book_title}}</h4>
+                      <a :href="'/book/'+ item.book_id" style="font-size: 12px; color:#FF6666; text-align:left">{{item.book_title}}</a>
                       <p style="font-size: 12px; color:#686868; text-align:left">作者：{{item.author}}</p>
                     </div>
 <!--                  </ul>-->
@@ -94,6 +94,7 @@ export default {
     data() {
       return {
           dateFormat,
+          screenWidth: document.body.clientWidth,
           now_url: this.$route.path,
           bookItems: {},
           // indexItems: {},
@@ -109,7 +110,33 @@ export default {
       });
 
   },
+    watch: {
+        screenWidth(val){
+            // 为了避免频繁触发resize函数导致页面卡顿，使用定时器
+            if(!this.timer){
+                // 一旦监听到的screenWidth值改变，就将其重新赋给data里的screenWidth
+                this.screenWidth = val
+                this.timer = true
+                let that = this
+                setTimeout(function(){
+                    // 打印screenWidth变化的值
+                    console.log(that.screenWidth)
+                    that.timer = false
+                },400)
+            }
+        }
+      },
+      mounted () {
+        const that = this
+        window.onresize = () => {
+        return (() => {
+            window.screenWidth = document.body.clientWidth
+            that.screenWidth = window.screenWidth
+          })()
 
+          }
+
+      },
 
 }
 </script>

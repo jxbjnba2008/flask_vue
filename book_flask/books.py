@@ -126,6 +126,7 @@ class Books(object):
         for row in rows:
             data.append(row.as_dict())
         if data:
+            # print(data[0])
             return data[0]
         else:
             return None
@@ -141,7 +142,7 @@ class Books(object):
         rows = self.db.query(sql, **emp)
         for row in rows:
             data.append(row.as_dict())
-        # print(data[0])
+        print(data[0])
         if data:
             return data[0]
         else:
@@ -164,4 +165,5 @@ class Books(object):
 
 if __name__ == '__main__':
     books = Books()
-    books.get_books_page('xuanhuan', 0, 10)
+    # books.get_books_page('xuanhuan', 0, 10)
+    books.get_before_cap_id(76312, 22145521)
